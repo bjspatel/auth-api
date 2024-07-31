@@ -21,7 +21,7 @@ export class UserService {
     return this.transformService.toUserResponseDto(userDto);
   }
 
-  async getMe(userId: string): Promise<UserDto> {
+  async getUser(userId: string): Promise<UserDto> {
     const user = await this.userModel.findById(userId);
     return this.transformService.toUserResponseDto(user);
   }
