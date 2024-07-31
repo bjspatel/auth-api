@@ -1,12 +1,14 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User, UserDocument } from 'src/user/types/user.schema';
+import { UserTransformerService } from 'src/user/user-transformer.service';
+
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
+
 import { LoginRequestDto } from './types/login-request.dto';
 import { TokenDto } from './types/token-dto';
-import { JwtService } from '@nestjs/jwt';
-import { UserTransformerService } from 'src/user/user-transformer.service';
 
 @Injectable()
 export class AuthService {
@@ -44,6 +46,19 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
 
+    return this.getTokens(user);
+  }
+
+  async refreshToken(oldRefreshToken: string): Promise<TokenDto> {
+    const payload = await this.jwtService.verifyAsync(oldRefreshToken, {
+      ignoreExpiration: true,
+    });
+    const user = await this.userModel.findById(
+      new Types.ObjectId(payload.userId as string),
+    );
+    if (!user) {
+      throw new UnauthorizedException();
+    }
     return this.getTokens(user);
   }
 }
