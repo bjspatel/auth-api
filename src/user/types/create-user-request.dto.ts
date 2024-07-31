@@ -10,15 +10,6 @@ import {
 export class CreateUserRequestDto {
   @ApiProperty({
     type: String,
-    description: 'Name of the user',
-    required: true,
-  })
-  @IsString()
-  @MinLength(2)
-  name: string;
-
-  @ApiProperty({
-    type: String,
     description: 'Email of the user',
     required: true,
   })

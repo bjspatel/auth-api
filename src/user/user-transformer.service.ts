@@ -9,7 +9,6 @@ export class UserTransformerService {
     requestDto: CreateUserRequestDto,
   ): CreateUserRequestDto {
     return {
-      name: requestDto.name.trim(),
       email: requestDto.email.trim(),
       password: requestDto.password,
     };

@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import * as bcrypth from 'bcrypt';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './types/user.schema';
@@ -16,8 +17,18 @@ export class UserService {
   async createUser(requestDto: CreateUserRequestDto): Promise<UserDto> {
     const sanitizedRequestDto =
       this.transformService.sanitizeCreateUserRequest(requestDto);
-    const user = new this.userModel(sanitizedRequestDto);
-    const userDto = await user.save();
+    const existingUser = await this.userModel.findOne({
+      email: sanitizedRequestDto.email,
+    });
+    if (existingUser) {
+      throw new UnprocessableEntityException('User already exists');
+    }
+    const passwordHash = await bcrypth.hash(sanitizedRequestDto.password, 10);
+    const dbInput = {
+      email: sanitizedRequestDto.email,
+      passwordHash,
+    };
+    const userDto = await this.userModel.create(dbInput);
     return this.transformService.toUserResponseDto(userDto);
   }
 

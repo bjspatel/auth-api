@@ -2,11 +2,12 @@ import { Public } from 'src/decorators/public.decorator';
 import { UserId } from 'src/decorators/userid.decorator';
 
 import { Body, Controller, Get, Post, ValidationPipe } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserRequestDto } from './types/create-user-request.dto';
 import { UserService } from './user.service';
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
