@@ -26,6 +26,7 @@ export class UserService {
     const passwordHash = await bcrypth.hash(sanitizedRequestDto.password, 10);
     const dbInput = {
       email: sanitizedRequestDto.email,
+      name: sanitizedRequestDto.name,
       passwordHash,
     };
     const userDto = await this.userModel.create(dbInput);

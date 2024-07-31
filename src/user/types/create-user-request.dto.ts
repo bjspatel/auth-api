@@ -18,6 +18,16 @@ export class CreateUserRequestDto {
 
   @ApiProperty({
     type: String,
+    description: 'Name of the user',
+    required: true,
+  })
+  @IsString()
+  @MinLength(2)
+  @MaxLength(50)
+  name: string;
+
+  @ApiProperty({
+    type: String,
     description: 'Password of the user',
   })
   @IsString()
