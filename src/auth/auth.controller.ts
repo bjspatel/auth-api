@@ -13,19 +13,18 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  async login(
-    @Body() requestDto: LoginRequestDto,
-    @Res() res: Response,
-  ): Promise<TokenDto> {
+  async login(@Body() requestDto: LoginRequestDto, @Res() res: Response) {
     const tokenDto = await this.authService.login(requestDto);
     res.cookie('refreshToken', tokenDto.refreshToken, {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
     });
-    return tokenDto;
+    delete tokenDto.refreshToken;
+    res.send(tokenDto);
   }
 
+  @Public()
   @Post('logout')
   async logout(@Res() res: Response): Promise<void> {
     res.clearCookie('refreshToken');

@@ -14,9 +14,5 @@ export class TokenDto {
   })
   accessToken: string;
 
-  @ApiProperty({
-    type: String,
-    description: 'Refresh token',
-  })
   refreshToken: string;
 }
