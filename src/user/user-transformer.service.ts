@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserRequestDto } from './types/create-user-request.dto';
 import { UserDto } from './types/user.dto';
 import { UserDocument } from './types/user.schema';
+import { UpdateUserRequestDto } from './types/update-user-request.dto';
 
 @Injectable()
 export class UserTransformerService {
@@ -15,6 +16,25 @@ export class UserTransformerService {
     };
   }
 
+  sanitizeUpdateUserRequest(
+    updateUserRequestDto: UpdateUserRequestDto,
+  ): UpdateUserRequestDto {
+    const sanitizedRequest: UpdateUserRequestDto = {};
+    if (updateUserRequestDto.name) {
+      sanitizedRequest.name = updateUserRequestDto.name;
+    }
+    if (updateUserRequestDto.email) {
+      sanitizedRequest.email = updateUserRequestDto.email;
+    }
+    if (updateUserRequestDto.country) {
+      sanitizedRequest.country = updateUserRequestDto.country;
+    }
+    if (updateUserRequestDto.phone) {
+      sanitizedRequest.phone = updateUserRequestDto.phone;
+    }
+
+    return sanitizedRequest;
+  }
   toUserResponseDto(user: UserDocument): UserDto {
     return {
       id: user.id,

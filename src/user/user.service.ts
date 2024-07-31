@@ -1,11 +1,12 @@
 import * as bcrypth from 'bcrypt';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from './types/user.schema';
 import { CreateUserRequestDto } from './types/create-user-request.dto';
 import { UserTransformerService } from './user-transformer.service';
 import { UserDto } from './types/user.dto';
+import { UpdateUserRequestDto } from './types/update-user-request.dto';
 
 @Injectable()
 export class UserService {
@@ -35,6 +36,20 @@ export class UserService {
 
   async getUser(userId: string): Promise<UserDto> {
     const user = await this.userModel.findById(userId);
+    return this.transformService.toUserResponseDto(user);
+  }
+
+  async update(
+    userId: string,
+    requestDto: UpdateUserRequestDto,
+  ): Promise<UserDto> {
+    const sanitizedRequest =
+      this.transformService.sanitizeUpdateUserRequest(requestDto);
+    const user = await this.userModel.findByIdAndUpdate(
+      new Types.ObjectId(userId),
+      sanitizedRequest,
+      { new: true },
+    );
     return this.transformService.toUserResponseDto(user);
   }
 }
